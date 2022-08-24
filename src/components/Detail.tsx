@@ -11,17 +11,19 @@ import React from 'react';
 import {Colors} from '../constants/colors';
 
 type DetailProps = {
-  children: React.ReactNode;
+  title: string;
+  mode: string;
   uri: ImageSourcePropType;
   style: StyleProp<ViewStyle>;
 };
 
-const Detail: React.FC<DetailProps> = ({children, uri, style}) => {
+const Detail: React.FC<DetailProps> = ({title, mode, uri, style}) => {
   return (
     <View style={[styles.rootContainer, style]}>
       <Image source={uri} style={styles.image} />
       <View>
-        <Text style={styles.text}>{children}</Text>
+        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.mode}>{mode}</Text>
       </View>
     </View>
   );
@@ -45,7 +47,14 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    alignSelf: 'center',
+    color: Colors.gray500,
     textAlign: 'center',
+  },
+  mode: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    paddingTop: 12,
   },
 });
