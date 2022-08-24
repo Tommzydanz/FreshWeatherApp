@@ -9,17 +9,18 @@ import {
 } from 'react-native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {IWeatherForecast} from '../../constants/interfaces';
-import {WeatherContext} from '../../context/WeatherReportContext';
+import {LocationContext} from '../../context/LocationContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getWeather} from '../../util/http';
 import IconButton from '../../components/ui/IconButton';
 import MinAndMax from '../../components/MinAndMax';
 import Detail from '../../components/Detail';
 import {Colors} from '../../constants/colors';
+// import moment from 'moment';
 
 const Forecast = () => {
   const [weather, setWeather] = useState<IWeatherForecast>();
-  const {location} = useContext(WeatherContext);
+  const {location} = useContext(LocationContext);
   const [error, setError] = useState<string>();
 
   const fetchWeather = useCallback(async () => {
@@ -88,8 +89,10 @@ const Forecast = () => {
         <Text style={styles.mainDate}>DATE TO BE ADDED</Text>
         <View style={styles.mainWeatherContainer}>
           <View style={styles.mainWeatherText}>
-            <Text>Day Weather Condition </Text>
-            <Text>Temperature</Text>
+            <Text style={{fontSize: 24, color: Colors.purple300}}>
+              Mostly Sunny
+            </Text>
+            <Text style={{fontSize: 72, color: Colors.purple600}}>33°</Text>
           </View>
           <View style={styles.mainWeatherImage}>
             <Image
@@ -108,24 +111,29 @@ const Forecast = () => {
         <Text style={styles.detailText}>Detail</Text>
         <View style={styles.detailContainer}>
           <Detail
-            children={'Humidity \n\n 33%'}
+            title={'Humidity'}
+            mode={'33%'}
             uri={require('../../assets/images/humidity.png')}
             style={undefined}
           />
           <Detail
-            children={'Reel Feel \n\n 33°'}
+            title={'Reel Feel'}
+            mode={'33°'}
             uri={require('../../assets/images/weather_cdns/clear_sky.png')}
             style={undefined}
           />
           <Detail
-            children={'Wind Speed \n\n 3.6m/s'}
+            title={'Wind Speed'}
+            mode={'3.6m/s'}
             uri={require('../../assets/images/windspeed.png')}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{borderRightWidth: 0}}
           />
         </View>
-        <View>
-          <Text>EveryDay</Text>
+        <View style={{padding: 24}}>
+          <View style={styles.daysContainer}>
+            <Text style={styles.daysText}>EveryDay</Text>
+          </View>
         </View>
       </SafeAreaView>
     </>
@@ -159,7 +167,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 48,
+    paddingTop: 23,
   },
   contentLoader: {
     alignSelf: 'center',
@@ -172,9 +180,9 @@ const styles = StyleSheet.create({
   },
   detailText: {
     alignSelf: 'flex-start',
-    padding: 24,
+    padding: 20,
     color: 'white',
-    fontSize: 14,
+    fontSize: 16,
   },
   detailContainer: {
     flexDirection: 'row',
@@ -189,5 +197,15 @@ const styles = StyleSheet.create({
     shadowColor: Colors.purple500,
     shadowOffset: {width: 2, height: 2},
     shadowOpacity: 0.25,
+  },
+  daysContainer: {
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray500,
+    paddingTop: 12,
+  },
+  daysText: {
+    fontSize: 16,
+    textAlign: 'left',
+    color: 'white',
   },
 });

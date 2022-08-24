@@ -8,10 +8,10 @@ import GetStarted from './screens/GetStarted';
 import SelectLocation from './screens/SelectLocation';
 import Forecast from './screens/main_screen/Forecast';
 import SearchCity from './screens/main_screen/SearchCity';
-import WeatherContextProvider from './context/LocationContextProvider';
-import {WeatherContext} from './context/LocationContext';
 import {Colors} from './constants/colors';
 import IconButton from './components/ui/IconButton';
+import LocationContextProvider from './context/LocationContextProvider';
+import {LocationContext} from './context/LocationContext';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,7 +87,7 @@ function Main() {
 }
 
 function Navigation() {
-  const {location} = useContext(WeatherContext);
+  const {location} = useContext(LocationContext);
 
   return (
     <NavigationContainer>
@@ -101,9 +101,9 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <WeatherContextProvider>
+      <LocationContextProvider>
         <Navigation />
-      </WeatherContextProvider>
+      </LocationContextProvider>
     </>
   );
 };

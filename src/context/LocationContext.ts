@@ -1,4 +1,4 @@
 import {createContext} from 'react';
-import {IWeatherContext} from './interfaces';
+import {ILocationContext} from './interfaces';
 
-export const WeatherContext = createContext<IWeatherContext>({});
+export const LocationContext = createContext<ILocationContext>({});

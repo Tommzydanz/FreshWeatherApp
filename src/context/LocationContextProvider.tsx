@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useState} from 'react';
-import {WeatherContext} from './LocationContext';
-import {ILocation, IWeatherContextProviderProps} from './interfaces';
+import {LocationContext} from './LocationContext';
+import {ILocation, ILocationContextProviderProps} from './interfaces';
 
-const WeatherContextProvider: IWeatherContextProviderProps =
-  function WeatherContextProvider({children}) {
+const LocationContextProvider: ILocationContextProviderProps =
+  function LocationContextProvider({children}) {
     const [location, setLocation] = useState<ILocation>();
 
     const initialize = useCallback(async () => {
@@ -30,14 +30,14 @@ const WeatherContextProvider: IWeatherContextProviderProps =
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-      <WeatherContext.Provider
+      <LocationContext.Provider
         value={{
           location,
           setLocation,
         }}>
         {children}
-      </WeatherContext.Provider>
+      </LocationContext.Provider>
     );
   };
 
-export default WeatherContextProvider;
+export default LocationContextProvider;

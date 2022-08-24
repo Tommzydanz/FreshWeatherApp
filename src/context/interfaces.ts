@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type IWeatherContextProviderProps = React.FC<{
+export type ILocationContextProviderProps = React.FC<{
   children: React.ReactNode;
 }>;
 
@@ -9,9 +9,7 @@ export type ILocation = {
   state: string;
 };
 
-export type IWeatherReport = any;
-
-export type IWeatherContext = {
+export type ILocationContext = {
   location?: ILocation;
   setLocation?: (location: ILocation) => void;
 };
