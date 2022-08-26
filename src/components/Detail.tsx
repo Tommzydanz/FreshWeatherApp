@@ -20,7 +20,9 @@ type DetailProps = {
 const Detail: React.FC<DetailProps> = ({title, mode, uri, style}) => {
   return (
     <View style={[styles.rootContainer, style]}>
-      <Image source={uri} style={styles.image} />
+      <View style={{}}>
+        <Image source={uri} style={styles.image} resizeMode={'contain'} />
+      </View>
       <View>
         <Text style={styles.text}>{title}</Text>
         <Text style={styles.mode}>{mode}</Text>
@@ -35,24 +37,24 @@ const styles = StyleSheet.create({
   rootContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    justifyContent: 'space-around',
+    paddingHorizontal: 8,
     borderRightWidth: 1,
     borderRightColor: Colors.gray500,
   },
   image: {
-    width: 20,
-    height: 20,
-    alignSelf: 'center',
+    width: 24,
+    height: 24,
+    paddingHorizontal: 18,
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.gray500,
     textAlign: 'center',
   },
   mode: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     color: 'white',
     textAlign: 'center',
     paddingTop: 12,

@@ -6,9 +6,17 @@ import {
   Image,
   ActivityIndicator,
   StatusBar,
+  FlatList,
+  ImageBackground,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {IWeatherForecast} from '../../constants/interfaces';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {IWeatherForecast, List} from '../../constants/interfaces';
 import {LocationContext} from '../../context/LocationContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getWeather} from '../../util/http';
@@ -16,12 +24,33 @@ import IconButton from '../../components/ui/IconButton';
 import MinAndMax from '../../components/MinAndMax';
 import Detail from '../../components/Detail';
 import {Colors} from '../../constants/colors';
-// import moment from 'moment';
+import moment from 'moment';
+import DayItem from '../../components/DaysList/DayItem';
+
+const tempConverter: number = -273.15;
 
 const Forecast = () => {
   const [weather, setWeather] = useState<IWeatherForecast>();
   const {location} = useContext(LocationContext);
   const [error, setError] = useState<string>();
+
+  const todaysWeather = useMemo((): List | undefined => {
+    if (!weather) {
+      return;
+    }
+    return weather.list.find(item => {
+      const startOfDay = moment().startOf('day').unix();
+      const endOfDay = moment().endOf('day').unix();
+      if (!item.dt) {
+        return false;
+      }
+
+      if (item.dt < startOfDay || item.dt > endOfDay) {
+        return item;
+      }
+      return item;
+    });
+  }, [weather]);
 
   const fetchWeather = useCallback(async () => {
     try {
@@ -53,19 +82,23 @@ const Forecast = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loading = useCallback(async () => {
-    if (!error && !weather) {
-      return (
-        <View style={styles.rootContainer}>
-          <ActivityIndicator
-            style={styles.contentLoader}
-            size="large"
-            color="#666666"
-          />
-        </View>
-      );
-    }
-  }, [error, weather]);
+  // const getCurrentDate = useCallback(() => {
+  //   /* get the date here */
+  //   const date = moment().format('MMM D, YYYY');
+  //   setToday(date);
+  // }, []);
+
+  if (!error && !weather) {
+    return (
+      <View style={styles.rootContainer}>
+        <ActivityIndicator
+          style={styles.contentLoader}
+          size="large"
+          color="#666666"
+        />
+      </View>
+    );
+  }
 
   if (!weather && error) {
     return (
@@ -75,7 +108,7 @@ const Forecast = () => {
             icon="arrows-rotate"
             size={24}
             color="#666666"
-            onPress={loading}
+            onPress={() => console.log('reload')}
           />
         )}
       </View>
@@ -86,25 +119,56 @@ const Forecast = () => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.rootContainer}>
-        <Text style={styles.mainDate}>DATE TO BE ADDED</Text>
+        <Text style={styles.mainDate}>
+          {moment((todaysWeather?.dt || 0) * 1000).format('ddd, MMMM DD YYYY')}
+        </Text>
         <View style={styles.mainWeatherContainer}>
           <View style={styles.mainWeatherText}>
             <Text style={{fontSize: 24, color: Colors.purple300}}>
-              Mostly Sunny
+              {todaysWeather?.weather
+                ? todaysWeather?.weather[0].description
+                : ''}
             </Text>
-            <Text style={{fontSize: 72, color: Colors.purple600}}>33°</Text>
+            <Text style={{fontSize: 72, color: Colors.purple600}}>
+              {parseInt(
+                todaysWeather
+                  ? String(todaysWeather.temp.day + tempConverter)
+                  : '',
+                10,
+              ) + '°'}
+            </Text>
           </View>
           <View style={styles.mainWeatherImage}>
-            <Image
-              source={require('../../assets/images/weather_cdns/clear_sky.png')}
-              style={styles.mainImage}
-              resizeMode="contain"
-            />
+            <ImageBackground
+              source={require('../../assets/images/oval_background.png')}
+              resizeMode="cover">
+              <Image
+                source={{
+                  uri: `https://openweathermap.org/img/wn/${todaysWeather?.weather[0].icon}@4x.png`,
+                }}
+                style={styles.mainImage}
+                resizeMode="contain"
+              />
+            </ImageBackground>
           </View>
         </View>
         <View style={styles.smallTemp}>
-          <MinAndMax children="35" icon="chevron-down-outline" />
-          <MinAndMax children="36" icon="chevron-up-outline" />
+          <MinAndMax icon="chevron-up-outline">
+            {parseInt(
+              todaysWeather
+                ? String(todaysWeather.temp.max + tempConverter)
+                : '',
+              10,
+            ) + '°'}
+          </MinAndMax>
+          <MinAndMax icon="chevron-down-outline">
+            {parseInt(
+              todaysWeather
+                ? String(todaysWeather?.temp.min + tempConverter)
+                : '',
+              10,
+            ) + '°'}
+          </MinAndMax>
         </View>
       </SafeAreaView>
       <SafeAreaView style={styles.weekContainer}>
@@ -112,19 +176,28 @@ const Forecast = () => {
         <View style={styles.detailContainer}>
           <Detail
             title={'Humidity'}
-            mode={'33%'}
+            mode={todaysWeather?.humidity + '%'}
             uri={require('../../assets/images/humidity.png')}
             style={undefined}
           />
           <Detail
             title={'Reel Feel'}
-            mode={'33°'}
-            uri={require('../../assets/images/weather_cdns/clear_sky.png')}
+            mode={
+              parseInt(
+                todaysWeather
+                  ? String(todaysWeather.feels_like.day + tempConverter)
+                  : '',
+                10,
+              ) + '°'
+            }
+            uri={{
+              uri: `https://openweathermap.org/img/wn/${todaysWeather?.weather[0].icon}@4x.png`,
+            }}
             style={undefined}
           />
           <Detail
             title={'Wind Speed'}
-            mode={'3.6m/s'}
+            mode={todaysWeather?.speed + 'km'}
             uri={require('../../assets/images/windspeed.png')}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{borderRightWidth: 0}}
@@ -132,8 +205,24 @@ const Forecast = () => {
         </View>
         <View style={{padding: 24}}>
           <View style={styles.daysContainer}>
-            <Text style={styles.daysText}>EveryDay</Text>
+            <Text style={styles.daysText}>Everyday</Text>
           </View>
+          <FlatList
+            alwaysBounceVertical={false}
+            data={weather?.list}
+            renderItem={({item}) => {
+              return (
+                <DayItem
+                  date={item.dt}
+                  maxTemp={parseInt(String(item.temp.max + tempConverter), 10)}
+                  minTemp={parseInt(String(item.temp.min + tempConverter), 10)}
+                  uri={{
+                    uri: `https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png`,
+                  }}
+                />
+              );
+            }}
+          />
         </View>
       </SafeAreaView>
     </>
@@ -145,19 +234,19 @@ export default Forecast;
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
-    backgroundColor: Colors.purple100,
   },
   mainDate: {
     alignSelf: 'center',
+    marginTop: 12,
   },
   mainImage: {
-    width: 180,
-    height: 180,
+    width: 200,
+    height: 200,
+    paddingHorizontal: 18,
   },
   mainWeatherContainer: {
     flexDirection: 'row',
     paddingTop: 24,
-    marginVertical: 12,
     paddingHorizontal: 24,
   },
   mainWeatherImage: {
@@ -167,7 +256,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 23,
+    paddingTop: 20,
   },
   contentLoader: {
     alignSelf: 'center',
@@ -177,6 +266,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     paddingHorizontal: 24,
+    paddingBottom: 12,
   },
   detailText: {
     alignSelf: 'flex-start',
@@ -201,11 +291,12 @@ const styles = StyleSheet.create({
   daysContainer: {
     borderTopWidth: 1,
     borderTopColor: Colors.gray500,
-    paddingTop: 12,
+    paddingVertical: 12,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   daysText: {
     fontSize: 16,
-    textAlign: 'left',
     color: 'white',
   },
 });

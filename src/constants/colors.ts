@@ -5,5 +5,5 @@ export const Colors = {
   purple500: '#211772',
   purple600: '#342798',
   accent500: '#FFBA25',
-  gray500: '#D8D8D8',
+  gray500: '#a79f9f',
 };

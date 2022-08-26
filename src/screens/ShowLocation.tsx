@@ -1,61 +1,46 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useLayoutEffect, useCallback} from 'react';
+import React, {useState, useLayoutEffect, useCallback, useContext} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 // import DropDown from '../components/DropDown';
 import {getGeoInfo} from '../util/http';
-import Button from '../components/ui/Button';
 import {Colors} from '../constants/colors';
+import {LocationContext} from '../context/LocationContext';
+// import {LocationContext} from '../context/LocationContext';
 
 export type IpLocation = {
   country: string;
   state: string;
 };
 
-const SelectLocation = () => {
-  const [location, setLocation] = useState<IpLocation>();
+const SelectLocation: React.FC = () => {
+  const [showLocation, setShowLocation] = useState<IpLocation>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>();
+  const locationCtx = useContext(LocationContext);
 
-  async function showCurrentLocation() {
-    setIsLoading(true);
+  const showCurrentLocation = useCallback(async () => {
     try {
+      setIsLoading(true);
       const data = await getGeoInfo();
-      setLocation({country: data?.country_name, state: data?.region});
+      setShowLocation({
+        country: data.country_name,
+        state: data.region,
+      });
+      await AsyncStorage.setItem('LOCATION', JSON.stringify(data));
+
+      locationCtx.setLocation?.({
+        country: data.country_name,
+        state: data.region,
+      });
     } catch (err) {
       console.log(err);
-      setError((err as Error).message);
       setIsLoading(false);
     }
-  }
-
-  const saveLocationHandler = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      await AsyncStorage.setItem('LOCATION', JSON.stringify(location));
-    } catch (err) {
-      console.log(err);
-      setError((err as Error).message);
-    }
-    setIsLoading(false);
-    console.log('Saving location handler');
-  }, [location]);
+  }, [locationCtx]);
 
   useLayoutEffect(() => {
     showCurrentLocation();
-  }, []);
-
-  if (!error) {
-    return (
-      <View style={{backgroundColor: Colors.purple600}}>
-        <ActivityIndicator
-          style={styles.contentLoader}
-          size="large"
-          color="#666666"
-        />
-      </View>
-    );
-  }
+  }, [showCurrentLocation]);
 
   return (
     <View style={styles.rootContainer}>
@@ -74,15 +59,10 @@ const SelectLocation = () => {
             Current Location
             <Text style={{textAlign: 'center', fontSize: 16}}>
               <Text style={styles.title}>{'\n \u2022'}</Text>
-              {location?.state + ', ' + location?.country}
+              {showLocation?.state + ', ' + showLocation?.country}
             </Text>
           </Text>
         )}
-      </View>
-      <Text style={styles.text}> Or </Text>
-      {/* <DropDown /> */}
-      <View style={{marginTop: 200}}>
-        <Button onPress={saveLocationHandler}>Save & Continue</Button>
       </View>
     </View>
   );
@@ -99,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.purple500,
   },
   container: {
-    marginVertical: 100,
+    alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
@@ -123,8 +103,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     fontWeight: '600',
-  },
-  button: {
-    marginVertical: 24,
   },
 });

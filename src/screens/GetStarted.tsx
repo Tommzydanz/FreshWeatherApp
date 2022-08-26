@@ -10,7 +10,7 @@ export interface OnBoardProp {
 
 const GetStarted: FC<OnBoardProp> = ({navigation}) => {
   function onBoardHandler() {
-    navigation.navigate('SelectLocation');
+    navigation.navigate('ShowLocation');
   }
 
   return (
@@ -18,7 +18,7 @@ const GetStarted: FC<OnBoardProp> = ({navigation}) => {
       <ImageBackground
         source={require('../assets/images/oval_background.png')}
         style={styles.imageBackground}
-        resizeMode="cover">
+        resizeMode="contain">
         <View style={styles.imageContainer}>
           <Image source={require('../assets/images/fresh_weather.png')} />
         </View>
@@ -48,8 +48,7 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     width: '100%',
-    height: '60%',
-    borderRadius: 50,
+    height: 300,
   },
   imageStyle: {
     borderRadius: 50,
@@ -64,7 +63,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   textContainer: {
-    marginVertical: 12,
+    marginVertical: 24,
+    marginTop: 100,
     paddingHorizontal: 4,
   },
   title: {
@@ -81,5 +81,8 @@ const styles = StyleSheet.create({
   smallText: {
     fontSize: 15,
     color: 'white',
+  },
+  contentLoader: {
+    alignSelf: 'center',
   },
 });

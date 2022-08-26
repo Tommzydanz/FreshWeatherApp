@@ -11,7 +11,7 @@ type IMaxNMinProps = {
 const MinAndMax: React.FC<IMaxNMinProps> = ({icon, children}) => {
   return (
     <View style={styles.container}>
-      <Icon name={icon} size={22} color={Colors.gray500} />
+      <Icon name={icon} size={24} color={Colors.gray500} />
       <Text>{children}</Text>
     </View>
   );

@@ -32,8 +32,6 @@ const DropDown = () => {
     setStates(csc.getStatesOfCountry(countryId));
   }, []);
 
-
-
   useEffect(() => {
     loadCountries();
   }, [loadCountries]);
