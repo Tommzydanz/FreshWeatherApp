@@ -26,10 +26,15 @@ import Detail from '../../components/Detail';
 import {Colors} from '../../constants/colors';
 import moment from 'moment';
 import DayItem from '../../components/DaysList/DayItem';
+import {NavigationProp} from '@react-navigation/native';
 
 const tempConverter: number = -273.15;
 
-const Forecast = () => {
+export interface ForecastProp {
+  navigation: NavigationProp<any, any>;
+}
+
+const Forecast: React.FC<ForecastProp> = ({navigation}) => {
   const [weather, setWeather] = useState<IWeatherForecast>();
   const {location} = useContext(LocationContext);
   const [error, setError] = useState<string>();
@@ -77,6 +82,9 @@ const Forecast = () => {
   }, [fetchWeather, location?.country, location?.state]);
 
   useEffect(function componentDidMount() {
+    navigation.setOptions({
+      title: weather?.city?.name,
+    });
     loadWeather();
     return function componentWillUnmount() {};
     // eslint-disable-next-line react-hooks/exhaustive-deps

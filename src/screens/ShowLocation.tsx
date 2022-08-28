@@ -6,6 +6,8 @@ import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import {getGeoInfo} from '../util/http';
 import {Colors} from '../constants/colors';
 import {LocationContext} from '../context/LocationContext';
+import {OnBoardProp} from './GetStarted';
+
 // import {LocationContext} from '../context/LocationContext';
 
 export type IpLocation = {
@@ -13,7 +15,7 @@ export type IpLocation = {
   state: string;
 };
 
-const SelectLocation: React.FC = () => {
+const ShowLocation: React.FC<OnBoardProp> = ({navigation}) => {
   const [showLocation, setShowLocation] = useState<IpLocation>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const locationCtx = useContext(LocationContext);
@@ -39,8 +41,11 @@ const SelectLocation: React.FC = () => {
   }, [locationCtx]);
 
   useLayoutEffect(() => {
-    showCurrentLocation();
-  }, [showCurrentLocation]);
+    setTimeout(showCurrentLocation, 2000);
+    if (!showCurrentLocation) {
+      navigation.replace('LocationForm');
+    }
+  }, [navigation, showCurrentLocation, showLocation]);
 
   return (
     <View style={styles.rootContainer}>
@@ -68,7 +73,7 @@ const SelectLocation: React.FC = () => {
   );
 };
 
-export default SelectLocation;
+export default ShowLocation;
 
 const styles = StyleSheet.create({
   rootContainer: {

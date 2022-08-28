@@ -1,15 +1,23 @@
-import {View, Text, Pressable, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import React, {FC} from 'react';
 import {Colors} from '../../constants/colors';
 
 interface ButtonProps {
   children: string;
   onPress: () => void;
+  style: StyleProp<ViewStyle>;
 }
 
-const Button: FC<ButtonProps> = ({children, onPress}) => {
+const Button: FC<ButtonProps> = ({children, onPress, style}) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Pressable
         onPress={onPress}
         android_ripple={{color: Colors.offwhite}}
@@ -31,17 +39,15 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.accent500,
     borderRadius: 10,
-    marginVertical: 24,
-    marginHorizontal: 72,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     elevation: 4,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 4},
   },
   title: {
-    paddingVertical: 10,
-    paddingHorizontal: 4,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 14,
     color: 'white',
   },
 });

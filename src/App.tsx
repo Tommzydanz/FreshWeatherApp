@@ -5,15 +5,15 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GetStarted from './screens/GetStarted';
-import SelectLocation from './screens/ShowLocation';
 import Forecast from './screens/main_screen/Forecast';
-import SearchCity from './screens/main_screen/SearchCity';
 import {Colors} from './constants/colors';
 import IconButton from './components/ui/IconButton';
 import LocationContextProvider from './context/LocationContextProvider';
 import {LocationContext} from './context/LocationContext';
 import {ILocation} from './context/interfaces';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LocationForm from './screens/main_screen/LocationForm';
+import ShowLocation from './screens/ShowLocation';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,7 +25,8 @@ function OnBoard() {
         headerShown: false,
       }}>
       <Stack.Screen name="GetStarted" component={GetStarted} />
-      <Stack.Screen name="ShowLocation" component={SelectLocation} />
+      <Stack.Screen name="ShowLocation" component={ShowLocation} />
+      <Stack.Screen name="LocationForm" component={LocationForm} />
     </Stack.Navigator>
   );
 }
@@ -43,7 +44,9 @@ function DrawerNavigator() {
         drawerActiveBackgroundColor: Colors.purple100,
       }}>
       <Drawer.Screen
-        options={{
+        name="Forecast"
+        component={Forecast}
+        options={({navigation}) => ({
           // headerTitle: 'Weather Forecast',
           drawerIcon: ({color, size}) => (
             <Icon name="location-outline" color={color} size={size} />
@@ -54,14 +57,10 @@ function DrawerNavigator() {
               icon="add-outline"
               size={24}
               color={tintColor}
-              onPress={() => {
-                return console.log('Move to select other countries');
-              }}
+              onPress={() => navigation.navigate('LocationForm')}
             />
           ),
-        }}
-        name="Forecast"
-        component={Forecast}
+        })}
       />
     </Drawer.Navigator>
   );
@@ -85,7 +84,7 @@ function Main() {
             ),
           }}
         />
-        <Stack.Screen name="SearchCity" component={SearchCity} />
+        <Stack.Screen name="LocationForm" component={LocationForm} />
       </Stack.Navigator>
     </>
   );

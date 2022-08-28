@@ -1,16 +1,16 @@
-import {NavigationProp} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {FC} from 'react';
 import {Text, Image, StyleSheet, View, ImageBackground} from 'react-native';
 import Button from '../components/ui/Button';
 import {Colors} from '../constants/colors';
 
 export interface OnBoardProp {
-  navigation: NavigationProp<any, any>;
+  navigation: NativeStackNavigationProp<any, any>;
 }
 
 const GetStarted: FC<OnBoardProp> = ({navigation}) => {
   function onBoardHandler() {
-    navigation.navigate('ShowLocation');
+    navigation.replace('ShowLocation');
   }
 
   return (
@@ -33,7 +33,9 @@ const GetStarted: FC<OnBoardProp> = ({navigation}) => {
           includes most of the ones that every weather app has.
         </Text>
       </View>
-      <Button onPress={onBoardHandler}>Get Started</Button>
+      <Button onPress={onBoardHandler} style={undefined}>
+        Get Started
+      </Button>
     </View>
   );
 };
