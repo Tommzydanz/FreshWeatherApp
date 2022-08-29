@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: 'white',
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   minTemp: {
     fontSize: 14,

@@ -1,11 +1,10 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {Colors} from '../../constants/colors';
-import Button from '../../components/ui/Button';
-import DropDown from '../../components/DropDown';
+import DropDown from '../../components/LocationForm/DropDown';
 import {OnBoardProp} from '../GetStarted';
 
-const LocationForm: React.FC<OnBoardProp> = () => {
+const FindLocation: React.FC<OnBoardProp> = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
@@ -14,19 +13,12 @@ const LocationForm: React.FC<OnBoardProp> = () => {
       <View style={styles.innerContainer}>
         <Text style={styles.innerTitle}>Select your location </Text>
         <DropDown />
-        <Button
-          onPress={() => {
-            console.log('Saved');
-          }}
-          style={{marginVertical: 24}}>
-          Save & Continue
-        </Button>
       </View>
     </View>
   );
 };
 
-export default LocationForm;
+export default FindLocation;
 
 const styles = StyleSheet.create({
   container: {

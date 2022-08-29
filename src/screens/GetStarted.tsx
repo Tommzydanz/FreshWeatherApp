@@ -33,7 +33,9 @@ const GetStarted: FC<OnBoardProp> = ({navigation}) => {
           includes most of the ones that every weather app has.
         </Text>
       </View>
-      <Button onPress={onBoardHandler} style={undefined}>
+      <Button
+        onPress={onBoardHandler}
+        style={{marginVertical: 24, marginHorizontal: 50}}>
         Get Started
       </Button>
     </View>

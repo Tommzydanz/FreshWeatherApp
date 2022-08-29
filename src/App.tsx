@@ -12,11 +12,15 @@ import LocationContextProvider from './context/LocationContextProvider';
 import {LocationContext} from './context/LocationContext';
 import {ILocation} from './context/interfaces';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LocationForm from './screens/main_screen/LocationForm';
 import ShowLocation from './screens/ShowLocation';
+import FindLocation from './screens/main_screen/FindLocation';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+
+export type LocationFormParamsList = {
+  Forecast: undefined;
+};
 
 function OnBoard() {
   return (
@@ -26,7 +30,6 @@ function OnBoard() {
       }}>
       <Stack.Screen name="GetStarted" component={GetStarted} />
       <Stack.Screen name="ShowLocation" component={ShowLocation} />
-      <Stack.Screen name="LocationForm" component={LocationForm} />
     </Stack.Navigator>
   );
 }
@@ -57,7 +60,7 @@ function DrawerNavigator() {
               icon="add-outline"
               size={24}
               color={tintColor}
-              onPress={() => navigation.navigate('LocationForm')}
+              onPress={() => navigation.navigate('FindLocation')}
             />
           ),
         })}
@@ -84,7 +87,7 @@ function Main() {
             ),
           }}
         />
-        <Stack.Screen name="LocationForm" component={LocationForm} />
+        <Stack.Screen name="FindLocation" component={FindLocation} />
       </Stack.Navigator>
     </>
   );

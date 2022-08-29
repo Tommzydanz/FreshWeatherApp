@@ -110,15 +110,15 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
 
   if (!weather && error) {
     return (
-      <View style={styles.rootContainer}>
-        {error && (
-          <IconButton
-            icon="arrows-rotate"
-            size={24}
-            color="#666666"
-            onPress={() => console.log('reload')}
-          />
-        )}
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <IconButton
+          icon="refresh"
+          size={35}
+          color="#c21111"
+          onPress={() => {
+            return setTimeout(() => {}, 1000);
+          }}
+        />
       </View>
     );
   }

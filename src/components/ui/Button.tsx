@@ -17,16 +17,16 @@ interface ButtonProps {
 
 const Button: FC<ButtonProps> = ({children, onPress, style}) => {
   return (
-    <View style={[styles.container, style]}>
-      <Pressable
-        onPress={onPress}
-        android_ripple={{color: Colors.offwhite}}
-        style={({pressed}) => {
-          return pressed && styles.pressed;
-        }}>
+    <Pressable
+      onPress={onPress}
+      android_ripple={{color: Colors.offwhite}}
+      style={({pressed}) => {
+        return pressed && styles.pressed;
+      }}>
+      <View style={[styles.container, style]}>
         <Text style={styles.title}>{children}</Text>
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 };
 
@@ -38,9 +38,10 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: Colors.accent500,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 10,
     paddingVertical: 10,
-    paddingHorizontal: 10,
     elevation: 4,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 4},

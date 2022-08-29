@@ -1,14 +1,28 @@
-import {View, SafeAreaView, StyleSheet} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {View, SafeAreaView, StyleSheet, Alert} from 'react-native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import csc from 'michaelolof-country-state-city';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LocationContext} from '../../context/LocationContext';
+import Button from '../ui/Button';
+import {ILocation} from '../../context/interfaces';
+// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+// import {LocationFormParamsList} from '../App';
 // Import Interfaces`
 // import {ICountry, IState, ICity} from 'michaelolof-country-state-city';
+// type saveNavigationProp = NativeStackNavigationProp<LocationFormParamsList>;
 
 const DropDown = () => {
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [selectedState, setSelectedState] = useState<string>('');
+  // const [error, setError] = useState<string>();
+  // const [loading, setLoading] = useState<boolean>();
+  const locationCtx = useContext(LocationContext);
+
+  // const navigation = useNavigation<saveNavigationProp>();
   // const statesDropdownRef = useRef();
 
   const loadCountries = useCallback(() => {
@@ -30,6 +44,29 @@ const DropDown = () => {
     setStates(statesItem);
   }, []);
 
+  const handleSavedLocation = useCallback(async () => {
+    try {
+      const selectedLocation: ILocation = {
+        country: selectedCountry,
+        state: selectedState,
+      };
+      const savedLocation = await AsyncStorage.setItem(
+        'LOCATION',
+        JSON.stringify(selectedLocation),
+      );
+      locationCtx.setLocation?.({
+        country: selectedLocation.country,
+        state: selectedLocation.state,
+      });
+      if (savedLocation === null) {
+        Alert.alert('Unknown Error!', 'Please Select a Location');
+      }
+    } catch (err) {
+      console.log(err);
+      Alert.alert('Unknown Error!', 'Please Select a Location');
+    }
+  }, [locationCtx, selectedCountry, selectedState]);
+
   useEffect(() => {
     loadCountries();
   }, [loadCountries]);
@@ -39,9 +76,10 @@ const DropDown = () => {
       <View style={styles.dropdownContainer}>
         <SelectDropdown
           data={countries}
-          onSelect={(selectedItem, index) => {
+          onSelect={(selectedItem: string, index) => {
             console.log(selectedItem, index);
             index = index + 1;
+            setSelectedCountry(selectedItem);
             handleSelectCountry(index.toString());
           }}
           buttonTextAfterSelection={selectedItem => {
@@ -67,22 +105,22 @@ const DropDown = () => {
           }}
         />
       </View>
-      <View>
+      <View style={styles.dropdownContainer}>
         <SelectDropdown
           data={states}
           onSelect={(selectedItem, index) => {
+            setSelectedState(selectedItem);
             console.log(selectedItem, index);
           }}
+          defaultValue={'Select state'}
           buttonTextAfterSelection={selectedItem => {
             // text represented after item is selected
             // if data array is an array of objects then return selectedItem.property to render after item is selected
-            console.log(selectedItem);
             return selectedItem;
           }}
           rowTextForSelection={item => {
             // text represented for each item in dropdown
             // if data array is an array of objects then return item.property to represent item in dropdown
-            console.log(item);
             return item;
           }}
           defaultButtonText=" Select State"
@@ -99,6 +137,11 @@ const DropDown = () => {
           }}
         />
       </View>
+      <Button
+        onPress={handleSavedLocation}
+        style={{marginVertical: 24, paddingHorizontal: 24}}>
+        Save & Continue
+      </Button>
     </SafeAreaView>
   );
 };

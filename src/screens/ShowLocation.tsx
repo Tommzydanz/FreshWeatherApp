@@ -7,6 +7,7 @@ import {getGeoInfo} from '../util/http';
 import {Colors} from '../constants/colors';
 import {LocationContext} from '../context/LocationContext';
 import {OnBoardProp} from './GetStarted';
+import LocationForm from '../components/LocationForm/LocationForm';
 
 // import {LocationContext} from '../context/LocationContext';
 
@@ -15,9 +16,9 @@ export type IpLocation = {
   state: string;
 };
 
-const ShowLocation: React.FC<OnBoardProp> = ({navigation}) => {
+const ShowLocation: React.FC<OnBoardProp> = () => {
   const [showLocation, setShowLocation] = useState<IpLocation>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const locationCtx = useContext(LocationContext);
 
   const showCurrentLocation = useCallback(async () => {
@@ -36,16 +37,17 @@ const ShowLocation: React.FC<OnBoardProp> = ({navigation}) => {
       });
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   }, [locationCtx]);
 
   useLayoutEffect(() => {
-    setTimeout(showCurrentLocation, 2000);
-    if (!showCurrentLocation) {
-      navigation.replace('LocationForm');
-    }
-  }, [navigation, showCurrentLocation, showLocation]);
+    showCurrentLocation();
+  }, [showCurrentLocation]);
+
+  if (!showLocation && !isLoading) {
+    return <LocationForm />;
+  }
 
   return (
     <View style={styles.rootContainer}>
@@ -53,7 +55,7 @@ const ShowLocation: React.FC<OnBoardProp> = ({navigation}) => {
         <Text style={styles.title}>Weather</Text> Forecast
       </Text>
       <View>
-        {!isLoading ? (
+        {isLoading && !showLocation ? (
           <ActivityIndicator
             style={styles.contentLoader}
             size="large"
