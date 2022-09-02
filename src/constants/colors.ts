@@ -1,6 +1,6 @@
 export const Colors = {
   offwhite: '#f4f5f6',
-  purple100: '#F5F4FF',
+  purple100: '#e5e4f9',
   purple300: '#9F93FF',
   purple500: '#211772',
   purple600: '#342798',

@@ -1,29 +1,20 @@
-import {View, SafeAreaView, StyleSheet, Alert} from 'react-native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {View, SafeAreaView, StyleSheet, Alert} from 'react-native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import csc from 'michaelolof-country-state-city';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LocationContext} from '../../context/LocationContext';
 import Button from '../ui/Button';
 import {ILocation} from '../../context/interfaces';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {LocationFormParamsList} from '../App';
-// Import Interfaces`
-// import {ICountry, IState, ICity} from 'michaelolof-country-state-city';
-// type saveNavigationProp = NativeStackNavigationProp<LocationFormParamsList>;
 
 const DropDown = () => {
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [selectedState, setSelectedState] = useState<string>('');
-  // const [error, setError] = useState<string>();
-  // const [loading, setLoading] = useState<boolean>();
-  const locationCtx = useContext(LocationContext);
-
-  // const navigation = useNavigation<saveNavigationProp>();
-  // const statesDropdownRef = useRef();
+  const {saveLocation} = useContext(LocationContext);
+  const navigation = useNavigation();
 
   const loadCountries = useCallback(() => {
     const countriesData = csc.getAllCountries();
@@ -32,9 +23,6 @@ const DropDown = () => {
 
   const handleSelectCountry = useCallback((countryId: string) => {
     const statesData = csc.getStatesOfCountry(countryId);
-    // if (!countryId) {
-    //   return [];
-    // }
     let statesList = statesData.filter(value => {
       return value.country_id === countryId;
     });
@@ -46,30 +34,27 @@ const DropDown = () => {
 
   const handleSavedLocation = useCallback(async () => {
     try {
+      if (!saveLocation) {
+        throw new Error('Cannot save location right now.');
+      }
       const selectedLocation: ILocation = {
         country: selectedCountry,
         state: selectedState,
       };
-      const savedLocation = await AsyncStorage.setItem(
-        'LOCATION',
-        JSON.stringify(selectedLocation),
+      await saveLocation(selectedLocation);
+      navigation.dispatch(
+        CommonActions.reset({index: 0, routes: [{name: 'Forecast'}]}),
       );
-      locationCtx.setLocation?.({
-        country: selectedLocation.country,
-        state: selectedLocation.state,
-      });
-      if (savedLocation === null) {
-        Alert.alert('Unknown Error!', 'Please Select a Location');
-      }
     } catch (err) {
       console.log(err);
-      Alert.alert('Unknown Error!', 'Please Select a Location');
+      Alert.alert('Unknown Error!', (err as Error).message);
     }
-  }, [locationCtx, selectedCountry, selectedState]);
+  }, [navigation, saveLocation, selectedCountry, selectedState]);
 
-  useEffect(() => {
+  useEffect(function componentDidMount() {
     loadCountries();
-  }, [loadCountries]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SafeAreaView style={styles.dropdownsContainer}>
@@ -94,6 +79,13 @@ const DropDown = () => {
           defaultButtonText=" Select Country"
           buttonStyle={styles.dropdownBtnStyle}
           buttonTextStyle={styles.dropdownBtnTxtStyle}
+          search
+          searchInputStyle={styles.dropdownSearchInputStyleStyle}
+          searchPlaceHolder={'Search here'}
+          searchPlaceHolderColor={'darkgrey'}
+          renderSearchInputLeftIcon={() => {
+            return <Icon name={'search'} color={'#444'} size={18} />;
+          }}
           renderDropdownIcon={isOpened => {
             return (
               <Icon
@@ -126,6 +118,13 @@ const DropDown = () => {
           defaultButtonText=" Select State"
           buttonStyle={styles.dropdownBtnStyle}
           buttonTextStyle={styles.dropdownBtnTxtStyle}
+          search
+          searchInputStyle={styles.dropdownSearchInputStyleStyle}
+          searchPlaceHolder={'Search here'}
+          searchPlaceHolderColor={'darkgrey'}
+          renderSearchInputLeftIcon={() => {
+            return <Icon name={'search'} color={'#444'} size={18} />;
+          }}
           renderDropdownIcon={isOpened => {
             return (
               <Icon
@@ -168,4 +167,10 @@ const styles = StyleSheet.create({
     borderColor: '#444',
   },
   dropdownBtnTxtStyle: {color: '#444', textAlign: 'left'},
+  dropdownSearchInputStyleStyle: {
+    backgroundColor: '#EFEFEF',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#444',
+  },
 });

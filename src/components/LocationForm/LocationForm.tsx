@@ -2,8 +2,19 @@ import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import DropDown from './DropDown';
 import {Colors} from '../../constants/colors';
+// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+// import {LocationFormParamsList} from '../../App';
+// import {useNavigation} from '@react-navigation/native';
+
+// type saveNavigationProp = NativeStackNavigationProp<LocationFormParamsList>;
 
 const LocationForm = () => {
+  // const navigation = useNavigation<saveNavigationProp>();
+
+  // function saveLocation() {
+  //   navigation.goBack();
+  // }
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>

@@ -11,7 +11,12 @@ export const getWeather = async (
   return response.data;
 };
 
-export const getGeoInfo = async () => {
+interface IGeoInfo {
+  region: string;
+  country_name: string;
+}
+
+export const getGeoInfo = async (): Promise<IGeoInfo> => {
   const response = await axios.get('https://ipapi.co/json/');
   return response.data;
 };

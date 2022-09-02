@@ -12,4 +12,5 @@ export type ILocation = {
 export type ILocationContext = {
   location?: ILocation;
   setLocation?: (location: ILocation) => void;
+  saveLocation?: (location: ILocation) => void;
 };

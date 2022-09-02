@@ -83,18 +83,12 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
 
   useEffect(function componentDidMount() {
     navigation.setOptions({
-      title: weather?.city?.name,
+      title: location?.state + ', ' + location?.country,
     });
     loadWeather();
     return function componentWillUnmount() {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // const getCurrentDate = useCallback(() => {
-  //   /* get the date here */
-  //   const date = moment().format('MMM D, YYYY');
-  //   setToday(date);
-  // }, []);
 
   if (!error && !weather) {
     return (
@@ -132,7 +126,7 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
         </Text>
         <View style={styles.mainWeatherContainer}>
           <View style={styles.mainWeatherText}>
-            <Text style={{fontSize: 24, color: Colors.purple300}}>
+            <Text style={{fontSize: 28, color: Colors.purple300}}>
               {todaysWeather?.weather
                 ? todaysWeather?.weather[0].description
                 : ''}
@@ -245,7 +239,7 @@ const styles = StyleSheet.create({
   },
   mainDate: {
     alignSelf: 'center',
-    marginTop: 12,
+    marginTop: 20,
   },
   mainImage: {
     width: 200,
@@ -254,7 +248,6 @@ const styles = StyleSheet.create({
   },
   mainWeatherContainer: {
     flexDirection: 'row',
-    paddingTop: 24,
     paddingHorizontal: 24,
   },
   mainWeatherImage: {

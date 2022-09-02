@@ -1,17 +1,62 @@
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React, {FC} from 'react';
+import React, {FC, useCallback, useContext, useEffect} from 'react';
 import {Text, Image, StyleSheet, View, ImageBackground} from 'react-native';
-import Button from '../components/ui/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CommonActions} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Colors} from '../constants/colors';
+import {LocationContext} from '../context/LocationContext';
+import {getGeoInfo} from '../util/http';
 
 export interface OnBoardProp {
   navigation: NativeStackNavigationProp<any, any>;
 }
 
 const GetStarted: FC<OnBoardProp> = ({navigation}) => {
-  function onBoardHandler() {
-    navigation.replace('ShowLocation');
-  }
+  const {setLocation, saveLocation} = useContext(LocationContext);
+
+  const continueToNext = useCallback(
+    (screenName: string) => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: screenName}],
+        }),
+      );
+    },
+    [navigation],
+  );
+
+  const fetchLocationFromIpAddress = useCallback(async () => {
+    try {
+      const location = await getGeoInfo();
+      if (!saveLocation) {
+        throw new Error('Cannot save location right now.');
+      }
+      const newLocation = {
+        country: location.country_name,
+        state: location.region,
+      };
+      await saveLocation(newLocation);
+      continueToNext('Forecast');
+    } catch (err) {
+      continueToNext('FindLocation');
+    }
+  }, [continueToNext, saveLocation]);
+
+  const findSavedLocation = useCallback(async () => {
+    const savedLocationRaw = await AsyncStorage.getItem('LOCATION');
+    if (savedLocationRaw && setLocation) {
+      const savedLocation = JSON.parse(savedLocationRaw);
+      setLocation(savedLocation);
+      return continueToNext('Forecast');
+    }
+    fetchLocationFromIpAddress();
+  }, [continueToNext, fetchLocationFromIpAddress, setLocation]);
+
+  useEffect(function componetDidMount() {
+    findSavedLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.rootContainer}>
@@ -33,11 +78,6 @@ const GetStarted: FC<OnBoardProp> = ({navigation}) => {
           includes most of the ones that every weather app has.
         </Text>
       </View>
-      <Button
-        onPress={onBoardHandler}
-        style={{marginVertical: 24, marginHorizontal: 50}}>
-        Get Started
-      </Button>
     </View>
   );
 };

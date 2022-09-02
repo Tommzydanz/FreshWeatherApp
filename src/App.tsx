@@ -1,73 +1,15 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, StatusBar, StyleSheet, View} from 'react-native';
+import React from 'react';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/Ionicons';
 import GetStarted from './screens/GetStarted';
 import Forecast from './screens/main_screen/Forecast';
 import {Colors} from './constants/colors';
 import IconButton from './components/ui/IconButton';
 import LocationContextProvider from './context/LocationContextProvider';
-import {LocationContext} from './context/LocationContext';
-import {ILocation} from './context/interfaces';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import ShowLocation from './screens/ShowLocation';
 import FindLocation from './screens/main_screen/FindLocation';
 
 const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
-
-export type LocationFormParamsList = {
-  Forecast: undefined;
-};
-
-function OnBoard() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="GetStarted" component={GetStarted} />
-      <Stack.Screen name="ShowLocation" component={ShowLocation} />
-    </Stack.Navigator>
-  );
-}
-
-function DrawerNavigator() {
-  return (
-    <Drawer.Navigator
-      screenOptions={{
-        headerStyle: {backgroundColor: Colors.purple100},
-        headerTintColor: Colors.purple500,
-        drawerContentStyle: {backgroundColor: Colors.purple600},
-        sceneContainerStyle: {backgroundColor: Colors.purple100},
-        drawerInactiveTintColor: 'white',
-        drawerActiveTintColor: Colors.purple500,
-        drawerActiveBackgroundColor: Colors.purple100,
-      }}>
-      <Drawer.Screen
-        name="Forecast"
-        component={Forecast}
-        options={({navigation}) => ({
-          // headerTitle: 'Weather Forecast',
-          drawerIcon: ({color, size}) => (
-            <Icon name="location-outline" color={color} size={size} />
-          ),
-          drawerContentStyle: {backgroundColor: Colors.purple500},
-          headerRight: ({tintColor}) => (
-            <IconButton
-              icon="add-outline"
-              size={24}
-              color={tintColor}
-              onPress={() => navigation.navigate('FindLocation')}
-            />
-          ),
-        })}
-      />
-    </Drawer.Navigator>
-  );
-}
 
 function Main() {
   return (
@@ -75,17 +17,30 @@ function Main() {
       <StatusBar barStyle="light-content" />
       <Stack.Navigator
         screenOptions={{
-          headerShown: false,
+          headerStyle: {backgroundColor: Colors.purple100},
+          headerTintColor: Colors.purple500,
+          contentStyle: {backgroundColor: Colors.purple100},
         }}>
         <Stack.Screen
-          name="Drawer"
-          component={DrawerNavigator}
+          name="GetStarted"
+          component={GetStarted}
           options={{
-            contentStyle: {backgroundColor: Colors.purple500},
-            headerRight: ({tintColor}) => (
-              <Icon name="add-outline" size={24} color={tintColor} />
-            ),
+            headerShown: false,
           }}
+        />
+        <Stack.Screen
+          name="Forecast"
+          component={Forecast}
+          options={({navigation}) => ({
+            headerRight: ({tintColor}) => (
+              <IconButton
+                icon="add-outline"
+                size={24}
+                color={tintColor}
+                onPress={() => navigation.navigate('FindLocation')}
+              />
+            ),
+          })}
         />
         <Stack.Screen name="FindLocation" component={FindLocation} />
       </Stack.Navigator>
@@ -94,52 +49,11 @@ function Main() {
 }
 
 function Navigation() {
-  const {location} = useContext(LocationContext);
-
   return (
     <NavigationContainer>
-      {!location && <OnBoard />}
-      {location && <Main />}
+      <Main />
     </NavigationContainer>
   );
-}
-
-function Root() {
-  const [isShowingWeather, setIsShowingWeather] = useState<boolean>(true);
-  const locationCtx = useContext(LocationContext);
-
-  const initialize = useCallback(async () => {
-    // get saved location at component initialization
-    const persistedLocationRaw: string | null = await AsyncStorage.getItem(
-      'LOCATION',
-    );
-
-    // JSON parse location if found
-    const persistedLocation: ILocation = persistedLocationRaw
-      ? JSON.parse(persistedLocationRaw)
-      : undefined;
-    setIsShowingWeather(false);
-    // update sate with saved location
-    locationCtx.setLocation?.(persistedLocation);
-  }, [locationCtx]);
-
-  useEffect(function componentDidMount() {
-    // initialize component after 2 seconds (simulate an async call)
-    initialize();
-    return function componentWillUnmount() {
-      //  do nothing for now
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (isShowingWeather) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size={'large'} style={styles.contentLoader} />
-      </View>
-    );
-  }
-  return <Navigation />;
 }
 
 const App = () => {
@@ -147,19 +61,10 @@ const App = () => {
     <>
       <StatusBar barStyle="dark-content" />
       <LocationContextProvider>
-        <Root />
+        <Navigation />
       </LocationContextProvider>
     </>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentLoader: {
-    alignSelf: 'center',
-  },
-});
