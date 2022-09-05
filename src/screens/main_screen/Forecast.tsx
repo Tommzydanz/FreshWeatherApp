@@ -1,3 +1,10 @@
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   SafeAreaView,
   View,
@@ -9,16 +16,9 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {IWeatherForecast, List} from '../../constants/interfaces';
 import {LocationContext} from '../../context/LocationContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getWeather} from '../../util/http';
 import IconButton from '../../components/ui/IconButton';
 import MinAndMax from '../../components/MinAndMax';
@@ -27,6 +27,7 @@ import {Colors} from '../../constants/colors';
 import moment from 'moment';
 import DayItem from '../../components/DaysList/DayItem';
 import {NavigationProp} from '@react-navigation/native';
+// import _ from 'lodash';
 
 const tempConverter: number = -273.15;
 
@@ -83,7 +84,7 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
 
   useEffect(function componentDidMount() {
     navigation.setOptions({
-      title: location?.state + ', ' + location?.country,
+      title: '◎ ' + location?.state + ', ' + location?.country,
     });
     loadWeather();
     return function componentWillUnmount() {};
@@ -117,6 +118,13 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
     );
   }
 
+  const mainForecast = String(todaysWeather?.weather[0].description);
+  const mainText = mainForecast.split(' ');
+
+  for (let i = 0; i < mainText.length; i++) {
+    mainText[i] = mainText[i][0].toUpperCase() + mainText[i].substring(1);
+  }
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -126,12 +134,16 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
         </Text>
         <View style={styles.mainWeatherContainer}>
           <View style={styles.mainWeatherText}>
-            <Text style={{fontSize: 28, color: Colors.purple300}}>
-              {todaysWeather?.weather
-                ? todaysWeather?.weather[0].description
-                : ''}
+            <Text style={{fontSize: 20, color: Colors.purple300}}>
+              {todaysWeather?.weather ? mainText.join(' ') : ''}
             </Text>
-            <Text style={{fontSize: 72, color: Colors.purple600}}>
+            <Text
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{
+                fontSize: 64,
+                color: Colors.purple600,
+                textAlign: 'center',
+              }}>
               {parseInt(
                 todaysWeather
                   ? String(todaysWeather.temp.day + tempConverter)

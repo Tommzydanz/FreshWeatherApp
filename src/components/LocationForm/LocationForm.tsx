@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 150,
+    paddingTop: 100,
     backgroundColor: Colors.purple100,
   },
   innerContainer: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     paddingHorizontal: 24,
     marginVertical: 12,
-    marginHorizontal: 96,
+    marginHorizontal: 100,
   },
   title: {
     fontSize: 26,

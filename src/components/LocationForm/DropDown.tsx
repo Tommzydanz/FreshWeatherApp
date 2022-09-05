@@ -79,13 +79,6 @@ const DropDown = () => {
           defaultButtonText=" Select Country"
           buttonStyle={styles.dropdownBtnStyle}
           buttonTextStyle={styles.dropdownBtnTxtStyle}
-          search
-          searchInputStyle={styles.dropdownSearchInputStyleStyle}
-          searchPlaceHolder={'Search here'}
-          searchPlaceHolderColor={'darkgrey'}
-          renderSearchInputLeftIcon={() => {
-            return <Icon name={'search'} color={'#444'} size={18} />;
-          }}
           renderDropdownIcon={isOpened => {
             return (
               <Icon
@@ -118,13 +111,6 @@ const DropDown = () => {
           defaultButtonText=" Select State"
           buttonStyle={styles.dropdownBtnStyle}
           buttonTextStyle={styles.dropdownBtnTxtStyle}
-          search
-          searchInputStyle={styles.dropdownSearchInputStyleStyle}
-          searchPlaceHolder={'Search here'}
-          searchPlaceHolderColor={'darkgrey'}
-          renderSearchInputLeftIcon={() => {
-            return <Icon name={'search'} color={'#444'} size={18} />;
-          }}
           renderDropdownIcon={isOpened => {
             return (
               <Icon
