@@ -27,7 +27,6 @@ import {Colors} from '../../constants/colors';
 import moment from 'moment';
 import DayItem from '../../components/DaysList/DayItem';
 import {NavigationProp} from '@react-navigation/native';
-// import _ from 'lodash';
 
 const tempConverter: number = -273.15;
 
