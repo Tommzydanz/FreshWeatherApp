@@ -8,7 +8,9 @@ import {LocationContext} from '../../context/LocationContext';
 import Button from '../ui/Button';
 import {ILocation} from '../../context/interfaces';
 
-const DropDown = () => {
+type IDropDown = React.FC<{}>;
+
+const DropDown: IDropDown = function () {
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>('');
@@ -122,9 +124,7 @@ const DropDown = () => {
           }}
         />
       </View>
-      <Button
-        onPress={handleSavedLocation}
-        style={{marginVertical: 24, paddingHorizontal: 24}}>
+      <Button onPress={handleSavedLocation} style={styles.button}>
         Save & Continue
       </Button>
     </SafeAreaView>
@@ -134,6 +134,10 @@ const DropDown = () => {
 export default DropDown;
 
 const styles = StyleSheet.create({
+  button: {
+    marginVertical: 24,
+    paddingHorizontal: 24,
+  },
   dropdownsContainer: {
     alignItems: 'center',
     justifyContent: 'center',

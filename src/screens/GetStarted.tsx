@@ -18,7 +18,7 @@ export interface OnBoardProp {
   navigation: NativeStackNavigationProp<any, any>;
 }
 
-const GetStarted: FC<OnBoardProp> = ({navigation}) => {
+const GetStarted: FC<OnBoardProp> = function ({navigation}) {
   const {setLocation, saveLocation} = useContext(LocationContext);
 
   const continueToNext = useCallback(

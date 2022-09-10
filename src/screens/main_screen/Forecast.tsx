@@ -34,7 +34,7 @@ export interface ForecastProp {
   navigation: NavigationProp<any, any>;
 }
 
-const Forecast: React.FC<ForecastProp> = ({navigation}) => {
+const Forecast: React.FC<ForecastProp> = function ({navigation}) {
   const [weather, setWeather] = useState<IWeatherForecast>();
   const {location} = useContext(LocationContext);
   const [error, setError] = useState<string>();
@@ -104,7 +104,7 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
 
   if (!weather && error) {
     return (
-      <View style={{flex: 1, alignItems: 'center'}}>
+      <View style={styles.error}>
         <IconButton
           icon="refresh"
           size={35}
@@ -132,8 +132,8 @@ const Forecast: React.FC<ForecastProp> = ({navigation}) => {
           {moment((todaysWeather?.dt || 0) * 1000).format('ddd, MMMM DD YYYY')}
         </Text>
         <View style={styles.mainWeatherContainer}>
-          <View style={styles.mainWeatherText}>
-            <Text style={{fontSize: 20, color: Colors.purple300}}>
+          <View style={styles.mainWeatherTextContainer}>
+            <Text style={styles.mainWeatherText}>
               {todaysWeather?.weather ? mainText.join(' ') : ''}
             </Text>
             <Text
@@ -248,6 +248,10 @@ const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
   },
+  error: {
+    flex: 1,
+    alignItems: 'center',
+  },
   mainDate: {
     alignSelf: 'center',
     marginTop: 20,
@@ -264,12 +268,13 @@ const styles = StyleSheet.create({
   mainWeatherImage: {
     flex: 1,
   },
-  mainWeatherText: {
+  mainWeatherTextContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 20,
   },
+  mainWeatherText: {fontSize: 20, color: Colors.purple300},
   contentLoader: {
     alignSelf: 'center',
   },
