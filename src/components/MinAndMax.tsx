@@ -8,14 +8,12 @@ type IMaxNMinProps = {
   icon: string;
 };
 
-const MinAndMax: React.FC<IMaxNMinProps> = ({icon, children}) => {
-  return (
-    <View style={styles.container}>
-      <Icon name={icon} size={24} color={Colors.gray500} />
-      <Text>{children}</Text>
-    </View>
-  );
-};
+const MinAndMax: React.FC<IMaxNMinProps> = ({icon, children}) => (
+  <View style={styles.container}>
+    <Icon name={icon} size={24} color={Colors.gray500} />
+    <Text>{children}</Text>
+  </View>
+);
 
 export default MinAndMax;
 

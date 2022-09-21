@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   StyleSheet,
@@ -16,6 +15,7 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
+import {NavigationProp} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {IWeatherForecast, List} from '../../constants/interfaces';
 import {LocationContext} from '../../context/LocationContext';
@@ -26,7 +26,6 @@ import Detail from '../../components/Detail';
 import {Colors} from '../../constants/colors';
 import moment from 'moment';
 import DayItem from '../../components/DaysList/DayItem';
-import {NavigationProp} from '@react-navigation/native';
 
 const tempConverter: number = -273.15;
 
@@ -34,7 +33,7 @@ export interface ForecastProp {
   navigation: NavigationProp<any, any>;
 }
 
-const Forecast: React.FC<ForecastProp> = function ({navigation}) {
+const Forecast: React.FC<ForecastProp> = function Forecast({navigation}) {
   const [weather, setWeather] = useState<IWeatherForecast>();
   const {location} = useContext(LocationContext);
   const [error, setError] = useState<string>();
@@ -127,7 +126,7 @@ const Forecast: React.FC<ForecastProp> = function ({navigation}) {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.rootContainer}>
+      <View style={styles.rootContainer}>
         <Text style={styles.mainDate}>
           {moment((todaysWeather?.dt || 0) * 1000).format('ddd, MMMM DD YYYY')}
         </Text>
@@ -183,8 +182,8 @@ const Forecast: React.FC<ForecastProp> = function ({navigation}) {
             ) + '°'}
           </MinAndMax>
         </View>
-      </SafeAreaView>
-      <SafeAreaView style={styles.weekContainer}>
+      </View>
+      <View style={styles.weekContainer}>
         <Text style={styles.detailText}>Detail</Text>
         <View style={styles.detailContainer}>
           <Detail
@@ -237,7 +236,7 @@ const Forecast: React.FC<ForecastProp> = function ({navigation}) {
             }}
           />
         </View>
-      </SafeAreaView>
+      </View>
     </>
   );
 };

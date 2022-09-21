@@ -17,7 +17,7 @@ type DetailProps = {
   style: StyleProp<ViewStyle>;
 };
 
-const Detail: React.FC<DetailProps> = function ({title, mode, uri, style}) {
+const Detail: React.FC<DetailProps> = ({title, mode, uri, style}) => {
   return (
     <View style={[styles.rootContainer, style]}>
       <View style={{}}>

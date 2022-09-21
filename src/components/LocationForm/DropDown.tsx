@@ -1,5 +1,5 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {View, SafeAreaView, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import csc from 'michaelolof-country-state-city';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -10,7 +10,7 @@ import {ILocation} from '../../context/interfaces';
 
 type IDropDown = React.FC<{}>;
 
-const DropDown: IDropDown = function () {
+const DropDown: IDropDown = function DropDown() {
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>('');
@@ -59,7 +59,7 @@ const DropDown: IDropDown = function () {
   }, []);
 
   return (
-    <SafeAreaView style={styles.dropdownsContainer}>
+    <View style={styles.dropdownsContainer}>
       <View style={styles.dropdownContainer}>
         <SelectDropdown
           data={countries}
@@ -101,13 +101,9 @@ const DropDown: IDropDown = function () {
           }}
           defaultValue={'Select state'}
           buttonTextAfterSelection={selectedItem => {
-            // text represented after item is selected
-            // if data array is an array of objects then return selectedItem.property to render after item is selected
             return selectedItem;
           }}
           rowTextForSelection={item => {
-            // text represented for each item in dropdown
-            // if data array is an array of objects then return item.property to represent item in dropdown
             return item;
           }}
           defaultButtonText=" Select State"
@@ -127,7 +123,7 @@ const DropDown: IDropDown = function () {
       <Button onPress={handleSavedLocation} style={styles.button}>
         Save & Continue
       </Button>
-    </SafeAreaView>
+    </View>
   );
 };
 
