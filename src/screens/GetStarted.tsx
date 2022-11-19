@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   smallText: {
     fontSize: 15,
     color: 'white',
+    fontFamily: 'Roboto-Bold',
   },
   contentLoader: {
     alignSelf: 'center',
