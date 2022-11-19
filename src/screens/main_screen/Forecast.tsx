@@ -273,7 +273,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 20,
   },
-  mainWeatherText: {fontSize: 20, color: Colors.purple300},
+  mainWeatherText: {
+    fontSize: 20,
+    color: Colors.purple300,
+    fontFamily: 'Roboto-Italic',
+  },
   contentLoader: {
     alignSelf: 'center',
   },
@@ -289,6 +293,7 @@ const styles = StyleSheet.create({
     padding: 20,
     color: 'white',
     fontSize: 16,
+    fontFamily: 'Roboto-Bold',
   },
   detailContainer: {
     flexDirection: 'row',
