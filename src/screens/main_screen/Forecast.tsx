@@ -142,11 +142,10 @@ const Forecast: React.FC<ForecastProp> = function Forecast({navigation}) {
                 color: Colors.purple600,
                 textAlign: 'center',
               }}>
-              {parseInt(
+              {Number(
                 todaysWeather
                   ? String(todaysWeather.temp.day + tempConverter)
                   : '',
-                10,
               ) + '°'}
             </Text>
           </View>
@@ -166,19 +165,17 @@ const Forecast: React.FC<ForecastProp> = function Forecast({navigation}) {
         </View>
         <View style={styles.smallTemp}>
           <MinAndMax icon="chevron-up-outline">
-            {parseInt(
+            {Number(
               todaysWeather
                 ? String(todaysWeather.temp.max + tempConverter)
                 : '',
-              10,
             ) + '°'}
           </MinAndMax>
           <MinAndMax icon="chevron-down-outline">
-            {parseInt(
+            {Number(
               todaysWeather
                 ? String(todaysWeather?.temp.min + tempConverter)
                 : '',
-              10,
             ) + '°'}
           </MinAndMax>
         </View>
@@ -195,11 +192,10 @@ const Forecast: React.FC<ForecastProp> = function Forecast({navigation}) {
           <Detail
             title={'Reel Feel'}
             mode={
-              parseInt(
+              Number(
                 todaysWeather
                   ? String(todaysWeather.feels_like.day + tempConverter)
                   : '',
-                10,
               ) + '°'
             }
             uri={{
@@ -226,8 +222,8 @@ const Forecast: React.FC<ForecastProp> = function Forecast({navigation}) {
               return (
                 <DayItem
                   date={item.dt}
-                  maxTemp={parseInt(String(item.temp.max + tempConverter), 10)}
-                  minTemp={parseInt(String(item.temp.min + tempConverter), 10)}
+                  maxTemp={Number(String(item.temp.max + tempConverter))}
+                  minTemp={Number(String(item.temp.min + tempConverter))}
                   uri={{
                     uri: `https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png`,
                   }}
